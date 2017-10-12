@@ -15,19 +15,21 @@ Nz = 5;
 % How many line elements to split the wire into
 N = 50;
 
+% x, y, and z coordinates of the wire
+wx = linspace(-L, L, N);
+wy = zeros(N);
+wz = zeros(N);
+
 %% Points in space where we will evaluate the field
 x = linspace(-10e-6, 10e-6, Nx);
 y = linspace(-10e-6, 10e-6, Ny);
 z = linspace(0, 10e-6, Nz);
-[X,Y,Z] = meshgrid(x,y,z);
+[X, Y, Z] = meshgrid(x, y, z);
 
 % x, y, and z components of the total field at each point
 Bx = zeros(Nx, Ny, Nz);
 By = zeros(Nx, Ny, Nz);
 Bz = zeros(Nx, Ny, Nz);
-
-% Length of each line segment to use
-dl = (2*L)/N;
 
 %% Calculate the magnetic field
 % Loop through all points in space
@@ -35,17 +37,18 @@ for i = 1:Nx
     for j = 1:Ny
         for k = 1:Nz
             % Loop through all line segments
-            for n = 1:N
+            for n = 1:N-1
                 % Vector of length dl pointing in direction of current flow
-                dl_vec = [dl, 0, 0];
-                % Position of the dl vector in space
-                dl_pos = [-L+(n*dl) 0 0];
-                % Position vector pointing from line segment to the point
-                % where we're calculating the field
-                r = [x(i) y(j) z(k)] - dl_pos;
+                dl = [wx(n+1)-wx(n) wy(n+1)-wy(n) wz(n+1)-wz(n)];
+                % Mid-point of the line segment
+                midpoint = 0.5 .* [wx(n)+wx(n+1) wy(n)+wy(n+1) wz(n)+wz(n+1)];
+                % Position vector pointing from midpoint of line segment to
+                % the point where we're calculating the field
+                r = [X(i,j,k) Y(i,j,k) Z(i,j,k)] - midpoint;
                 r_hat = (1/norm(r)) .* r;
+                
                 % Biot-Savart law
-                dB = cross(dl_vec, r_hat);
+                dB = cross(dl, r_hat);
                 dB = dB .* ((mu_0*I)/(4*pi*norm(r)^2));
                 % Add the contribution from this line segment to the total
                 % B-field at this point
@@ -58,11 +61,12 @@ for i = 1:Nx
 end
 
 %% Plot the results
+figure(1);
 hold on;
 quiver3(X,Y,Z, Bx,By,Bz);
 xlabel('x');
 ylabel('y');
 zlabel('z');
-% TODO: Why is the wire along the y-axis? Should be along x-axis
-line([0 0], [-L L], [0 0], 'color', 'r');
+line([-L L], [0 0], [0 0], 'color', 'r', 'linewidth', 3);
+hold off;
 
