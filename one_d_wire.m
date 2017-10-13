@@ -8,22 +8,36 @@ I = 355e-6;
 L = 5e-6; % Actually L/2 - only named L for convinience
 
 % How many points to evaluate the field at in each spatial dimension
-Nx = 10;
-Ny = 10;
-Nz = 5;
+Nx = 15;
+Ny = 15;
+Nz = 15;
 
 % How many line elements to split the wire into
-N = 50;
+% Currently must be a multiple of 3 as we have 3 wires (150/3 = 50 elements
+% per wire)
+N = 150;
 
 % x, y, and z coordinates of the wire
-wx = linspace(-L, L, N);
-wy = zeros(N);
-wz = zeros(N);
+wx = zeros(1, N);
+wy = zeros(1, N);
+wz = zeros(1, N);
+
+% First wire - parallel to y axis
+wx(1:(N/3)) = -L;
+wy(1:(N/3)) = linspace(0, 2*L, N/3);
+
+% Second wire - parallel to x axis
+wx((N/3)+1:(2*N/3)) = linspace(-L, L, N/3);
+wy((N/3)+1:(2*N/3)) = 0.0;
+
+% Third wire - parallel to y axis
+wx((2*N/3)+1:N) = L;
+wy((2*N/3)+1:N) = linspace(-2*L, 0, N/3);
 
 %% Points in space where we will evaluate the field
-x = linspace(-10e-6, 10e-6, Nx);
-y = linspace(-10e-6, 10e-6, Ny);
-z = linspace(0, 10e-6, Nz);
+x = linspace(-15e-6, 15e-6, Nx);
+y = linspace(-15e-6, 15e-6, Ny);
+z = linspace(0, 15e-6, Nz);
 [X, Y, Z] = meshgrid(x, y, z);
 
 % x, y, and z components of the total field at each point
@@ -63,10 +77,13 @@ end
 %% Plot the results
 figure(1);
 hold on;
-quiver3(X,Y,Z, Bx,By,Bz);
+quiver3(X,Y,Z, Bx,By,Bz, 'AutoScaleFactor', 3.0);
 xlabel('x');
 ylabel('y');
 zlabel('z');
-line([-L L], [0 0], [0 0], 'color', 'r', 'linewidth', 3);
+line(wx(1:(N/3)), wy(1:(N/3)), wz(1:(N/3)), 'color', 'r', 'linewidth', 2);
+line(wx((N/3)+1:(2*N/3)), wy((N/3)+1:(2*N/3)), wz((N/3)+1:(2*N/3)), 'color', 'r', 'linewidth', 2);
+line(wx((2*N/3):N), wy((2*N/3):N), wz((2*N/3):N), 'color', 'r', 'linewidth', 2);
+
 hold off;
 
