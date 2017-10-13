@@ -17,6 +17,7 @@ Nz = 15;
 % per wire)
 N = 150;
 
+%% Setup wire positions
 % x, y, and z coordinates of the wire
 wx = zeros(1, N);
 wy = zeros(1, N);
@@ -34,7 +35,8 @@ wy((N/3)+1:(2*N/3)) = 0.0;
 wx((2*N/3)+1:N) = L;
 wy((2*N/3)+1:N) = linspace(-2*L, 0, N/3);
 
-%% Points in space where we will evaluate the field
+%% Setup arrays for axes and the field
+% Points in space where we will evaluate the field
 x = linspace(-15e-6, 15e-6, Nx);
 y = linspace(-15e-6, 15e-6, Ny);
 z = linspace(0, 15e-6, Nz);
@@ -59,7 +61,7 @@ for i = 1:Nx
                 % Position vector pointing from midpoint of line segment to
                 % the point where we're calculating the field
                 r = [X(i,j,k) Y(i,j,k) Z(i,j,k)] - midpoint;
-                r_hat = (1/norm(r)) .* r;
+                r_hat = (1/norm(r)) .* r; % Unit vector used in cross product
                 
                 % Biot-Savart law
                 dB = cross(dl, r_hat);
@@ -77,10 +79,12 @@ end
 %% Plot the results
 figure(1);
 hold on;
-quiver3(X,Y,Z, Bx,By,Bz, 'AutoScaleFactor', 3.0);
+% Plot the magnetic field
+quiver3(X,Y,Z, Bx,By,Bz, 'AutoScaleFactor', 2.5);
 xlabel('x');
 ylabel('y');
 zlabel('z');
+% Show the positions of the wires
 line(wx(1:(N/3)), wy(1:(N/3)), wz(1:(N/3)), 'color', 'r', 'linewidth', 2);
 line(wx((N/3)+1:(2*N/3)), wy((N/3)+1:(2*N/3)), wz((N/3)+1:(2*N/3)), 'color', 'r', 'linewidth', 2);
 line(wx((2*N/3):N), wy((2*N/3):N), wz((2*N/3):N), 'color', 'r', 'linewidth', 2);
