@@ -4,42 +4,45 @@ clear all;
 
 %% Define constants and parameters
 mu_0 = pi*4e-7;
-I = 355e-6;
-L = 5e-6; % Actually L/2 - only named L for convinience
+% Parameters taken from [Haase et al]
+I = 15; % Current through wire (A)
+L1 = 6e-3; % Length of central wire (m)
+L2 = 25e-3; % Length of end wires (m)
 
 % How many points to evaluate the field at in each spatial dimension
-Nx = 15;
-Ny = 15;
-Nz = 15;
+Nx = 10;
+Ny = 10;
+Nz = 5;
 
-% How many line elements to split the wire into
-% Currently must be a multiple of 3 as we have 3 wires (150/3 = 50 elements
-% per wire)
-N = 150;
+% Length of each line segment
+dL = 0.1e-3;
+N1 = floor(L1 / dL);
+N2 = floor(L2 / dL);
+N = N1 + 2*N2;
 
 %% Setup wire positions
 % x, y, and z coordinates of the wire
 wx = zeros(1, N);
 wy = zeros(1, N);
-wz = zeros(1, N);
+wz = zeros(1, N); % All wires in z=0 plane
 
-% First wire - parallel to y axis
-wx(1:(N/3)) = -L;
-wy(1:(N/3)) = linspace(0, 2*L, N/3);
+% First end wire - parallel to y axis
+wx(1:N2) = -(L1 / 2);
+wy(1:N2) = linspace(0, L2, N2);
 
-% Second wire - parallel to x axis
-wx((N/3)+1:(2*N/3)) = linspace(-L, L, N/3);
-wy((N/3)+1:(2*N/3)) = 0.0;
+% Central wire - parallel to x axis
+wx((N2+1):(N1+N2)) = linspace(-(L1/2), L1/2, N1);
+wy((N2+1):(N1+N2)) = 0.0;
 
-% Third wire - parallel to y axis
-wx((2*N/3)+1:N) = L;
-wy((2*N/3)+1:N) = linspace(-2*L, 0, N/3);
+% Second end wire - parallel to y axis
+wx((N1+N2+1):N) = (L1 / 2);
+wy((N1+N2+1):N) = linspace(-L2, 0, N2);
 
 %% Setup arrays for axes and the field
 % Points in space where we will evaluate the field
-x = linspace(-15e-6, 15e-6, Nx);
-y = linspace(-15e-6, 15e-6, Ny);
-z = linspace(0, 15e-6, Nz);
+x = linspace(-(L2/2), L2/2, Nx);
+y = linspace(-(L2/2), L2/2, Ny);
+z = linspace(0, 5e-3, Nz);
 [X, Y, Z] = meshgrid(x, y, z);
 
 % x, y, and z components of the total field at each point
@@ -85,9 +88,9 @@ xlabel('x');
 ylabel('y');
 zlabel('z');
 % Show the positions of the wires
-line(wx(1:(N/3)), wy(1:(N/3)), wz(1:(N/3)), 'color', 'r', 'linewidth', 2);
-line(wx((N/3)+1:(2*N/3)), wy((N/3)+1:(2*N/3)), wz((N/3)+1:(2*N/3)), 'color', 'r', 'linewidth', 2);
-line(wx((2*N/3):N), wy((2*N/3):N), wz((2*N/3):N), 'color', 'r', 'linewidth', 2);
+line(wx(1:N2), wy(1:N2), wz(1:N2), 'color', 'r', 'linewidth', 2);
+line(wx((N2+1):(N1+N2)), wy((N2+1):(N1+N2)), wz((N2+1):(N1+N2)), 'color', 'r', 'linewidth', 2);
+line(wx((N1+N2+1):N), wy((N1+N2+1):N), wz((N1+N2+1):N), 'color', 'r', 'linewidth', 2);
 
 hold off;
 
