@@ -8,12 +8,12 @@ mu_0 = pi*4e-7;
 I = 15; % Current through wire (A)
 L1 = 6e-3; % Length of central wire (m)
 L2 = 25e-3; % Length of end wires (m)
-B_bias = 12.5e-4; % Strength of bias field in z direction (T)
+B_bias = 20e-4; % Strength of bias field in z direction (T)
 
 % How many points to evaluate the field at in each spatial dimension
 Nx = 20;
-Ny = 10;
-Nz = 5;
+Ny = 20;
+Nz = 15;
 
 % Length of each line segment
 dL = 0.1e-3;
@@ -41,7 +41,7 @@ wy((N1+N2+1):N) = linspace(-L2, 0, N2);
 
 %% Setup arrays for axes and the field
 % Points in space where we will evaluate the field
-x = linspace(-(L2/2), L2/2, Nx);
+x = linspace(-(L1), L1, Nx);
 y = linspace(-(L2/2), L2/2, Ny);
 z = linspace(0, 5e-3, Nz);
 [X, Y, Z] = meshgrid(x, y, z);
@@ -87,7 +87,7 @@ Bz = Bz + B_bias;
 figure(1);
 hold on;
 % Plot the magnetic field
-quiver3(X,Y,Z, Bx,By,Bz, 'AutoScaleFactor', 2.5);
+quiver3(X,Y,Z, Bx,By,Bz, 'AutoScaleFactor', 5);
 xlabel('x');
 ylabel('y');
 zlabel('z');
