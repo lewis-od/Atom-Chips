@@ -93,3 +93,22 @@ line(wx(1:N2), wy(1:N2), wz(1:N2), 'color', 'r', 'linewidth', 2);
 line(wx((N2+1):(N1+N2)), wy((N2+1):(N1+N2)), wz((N2+1):(N1+N2)), 'color', 'r', 'linewidth', 2);
 line(wx((N1+N2+1):N), wy((N1+N2+1):N), wz((N1+N2+1):N), 'color', 'r', 'linewidth', 2);
 hold off;
+
+%% Plot individual components of B
+figure();
+surf(X,Z,Bx);
+xlabel('x');
+ylabel('z');
+zlabel('B_x');
+
+figure();
+surf(X,Z,By);
+xlabel('x');
+ylabel('z');
+zlabel('B_y');
+
+figure();
+surf(X,Z,Bz);
+xlabel('x');
+ylabel('z');
+zlabel('B_z');
