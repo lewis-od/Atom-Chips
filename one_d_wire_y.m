@@ -10,7 +10,7 @@ L2 = L1 * 5; % Length of end wires (m)
 B_bias = 162e-4; % Strength of bias field (T)
 
 % How many points to evaluate the field at in each spatial dimension
-Nz = 500;
+Nx = 600;
 
 % Length of each line segment
 dL = 1e-6;
@@ -38,18 +38,18 @@ wy((N1+N2+1):N) = linspace(-L2, 0, N2);
 
 %% Setup arrays for axes and the field
 % Points in space where we will evaluate the field
-X = zeros(1, Nz);
-Y = zeros(1, Nz);
-Z = linspace(0, 200e-6, Nz);
+X = zeros(1, Nx);
+Y = linspace(-300e-6, 300e-6, Nx);
+Z = ones(1, Nx) .* 20e-6;
 
 % x, y, and z components of the total field at each point
-Bx = zeros(1, Nz);
-By = zeros(1, Nz);
-Bz = zeros(1, Nz);
+Bx = zeros(1, Nx);
+By = zeros(1, Nx);
+Bz = zeros(1, Nx);
 
 %% Calculate the magnetic field
 % Loop through all points in space
-for k = 1:Nz
+for i = 1:Nx
     % Loop through all line segments
     for n = 1:N-1
         % Vector of length dl pointing in direction of current flow
@@ -58,7 +58,7 @@ for k = 1:Nz
         midpoint = 0.5 .* [wx(n)+wx(n+1) wy(n)+wy(n+1) wz(n)+wz(n+1)];
         % Position vector pointing from midpoint of line segment to
         % the point where we're calculating the field
-        r = [0.0 0.0 Z(k)] - midpoint;
+        r = [X(i) Y(i) Z(i)] - midpoint;
         r_hat = (1/norm(r)) .* r; % Unit vector used in cross product
 
         % Biot-Savart law
@@ -66,9 +66,9 @@ for k = 1:Nz
         dB = dB .* ((mu_0*I)/(4*pi*norm(r)^2));
         % Add the contribution from this line segment to the total
         % B-field at this point
-        Bx(k) = Bx(k) + dB(1);
-        By(k) = By(k) + dB(2);
-        Bz(k) = Bz(k) + dB(3);
+        Bx(i) = Bx(i) + dB(1);
+        By(i) = By(i) + dB(2);
+        Bz(i) = Bz(i) + dB(3);
     end
 end
 
@@ -77,15 +77,16 @@ Bz = Bz + B_bias;
 %% Plot |B|
 figure();
 hold on;
-plot(Z, Bz);
-plot(Z, By);
-plot(Z, Bx);
-xlabel('z (m)');
+plot(Y, Bz);
+plot(Y, By);
+plot(Y, Bx);
+xlabel('y (m)');
 ylabel('B (T)');
-title('Z-wire at y=0 and z=0');
+title('Z-wire at x=0 and z= 20\mu m');
 legend({'Bx', 'By', 'Bz'});
 hold off;
 figure();
-plot(Z, sqrt(Bx.^2 + By.^2 + Bz.^2));
-xlabel('z (m)');
+plot(Y, sqrt(Bx.^2 + By.^2 + Bz.^2));
+xlabel('y (m)');
 ylabel('|B| (T)');
+title('Z-wire at y=0 and z=20\mu m');
