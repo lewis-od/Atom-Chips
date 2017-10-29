@@ -8,11 +8,11 @@ mu_0 = pi*4e-7;
 I = 15; % Current through wire (A)
 L1 = 6e-3; % Length of central wire (m)
 L2 = 25e-3; % Length of end wires (m)
-B_bias = 10e-4; % Strength of bias field in z direction (T)
+B_bias = 50e-4; % Strength of bias field in z direction (T)
 
 % How many points to evaluate the field at in each spatial dimension
-Nx = 15;
-Nz = 15;
+Nx = 30;
+Nz = 30;
 
 % Length of each line segment
 dL = 0.1e-3;
@@ -41,7 +41,7 @@ wy((N1+N2+1):N) = linspace(-L2, 0, N2);
 %% Setup arrays for axes and the field
 % Points in space where we will evaluate the field
 x = linspace(-(L1), L1, Nx);
-z = linspace(0, 5e-3, Nz);
+z = linspace(0, 4e-3, Nz);
 [X, Z] = meshgrid(x, z);
 Y = zeros(Nx, Nz);
 
@@ -95,20 +95,26 @@ line(wx((N1+N2+1):N), wy((N1+N2+1):N), wz((N1+N2+1):N), 'color', 'r', 'linewidth
 hold off;
 
 %% Plot individual components of B
+% figure();
+% surf(X,Z,Bx);
+% xlabel('x');
+% ylabel('z');
+% zlabel('B_x');
+% 
+% figure();
+% surf(X,Z,By);
+% xlabel('x');
+% ylabel('z');
+% zlabel('B_y');
+% 
+% figure();
+% surf(X,Z,Bz);
+% xlabel('x');
+% ylabel('z');
+% zlabel('B_z');
+B = sqrt(Bx.^2 + By.^2 + Bx.^2);
 figure();
-surf(X,Z,Bx);
+surf(X,Z,B);
 xlabel('x');
 ylabel('z');
-zlabel('B_x');
-
-figure();
-surf(X,Z,By);
-xlabel('x');
-ylabel('z');
-zlabel('B_y');
-
-figure();
-surf(X,Z,Bz);
-xlabel('x');
-ylabel('z');
-zlabel('B_z');
+zlabel('B');
