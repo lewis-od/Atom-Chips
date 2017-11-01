@@ -82,7 +82,7 @@ plot(Z, By);
 plot(Z, Bx);
 xlabel('z (m)');
 ylabel('B (T)');
-title('U-wire at y=0 and z=0');
+title('U-wire at y=0 and z=20\mu m');
 legend({'Bx', 'By', 'Bz'});
 hold off;
 figure();
