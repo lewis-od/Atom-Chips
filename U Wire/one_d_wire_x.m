@@ -27,7 +27,7 @@ wz = zeros(1, N); % All wires in z=0 plane
 
 % First end wire - parallel to y axis
 wx(1:N2) = -(L1 / 2);
-wy(1:N2) = linspace(0, L2, N2);
+wy(1:N2) = linspace(L2, 0, N2);
 
 % Central wire - parallel to x axis
 wx((N2+1):(N1+N2)) = linspace(-(L1/2), L1/2, N1);
@@ -83,7 +83,7 @@ plot(X, By);
 plot(X, Bx);
 xlabel('x (m)');
 ylabel('B (T)');
-title('Z-wire at y=0 and z=20\mu m');
+title('U-wire at y=0 and z=20\mu m');
 line(wx((N2+1):(N1+N2)), zeros(1, N1), zeros(1, N1), 'color', 'r', 'linewidth', 1);
 legend({'Bx', 'By', 'Bz', 'Wire'});
 hold off;
@@ -92,4 +92,4 @@ plot(X, sqrt(Bx.^2 + By.^2 + Bz.^2));
 line(wx((N2+1):(N1+N2)), zeros(1, N1), zeros(1, N1), 'color', 'r', 'linewidth', 1);
 xlabel('x (m)');
 ylabel('|B| (T)');
-title('Z-wire at y=0 and z=20\mu m');
+title('U-wire at y=0 and z=20\mu m');
