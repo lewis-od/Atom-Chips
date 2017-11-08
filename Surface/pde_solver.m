@@ -15,6 +15,9 @@ g = decsg(gm, sf, ns);
 geometryFromEdges(model, g);
 figure(1);
 pdegplot(model, 'EdgeLabels', 'on');
+title('Problem Geometry', 'FontSize', 18);
+xlabel('x', 'FontSize', 16);
+ylabel('y', 'FontSize', 16);
 axis equal;
 
 %% Specify boundary conditions
@@ -36,7 +39,30 @@ u = result.NodalSolution;
 
 %% Plot Result
 figure(2);
-pdeplot(model,'XYData',u,'ZData',u);
+plot = pdeplot(model,'XYData',u,'ZData',u);
 view(2);
+title("Solution", 'FontSize', 18);
 colormap('hsv');
+xlabel('x', 'FontSize', 16);
+ylabel('y', 'FontSize', 16);
+plot(2).Label.String = "\phi (x,y) [V]";
+plot(2).Label.FontSize = 16;
 axis equal;
+
+%% Interpolate from mesh to a square grid
+xq = linspace(-1, 1);
+yq = xq;
+[xq, yq] = meshgrid(xq, yq);
+u_interp = interpolateSolution(result, xq, yq);
+u_interp = reshape(u_interp, [length(xq), length(yq)]);
+
+figure(3);
+surf(xq, yq, u_interp, 'Mesh', 'no', 'FaceColor', 'interp');
+view(2);
+xlabel('x');
+ylabel('y');
+colorbar();
+axis equal;
+
+%% Calculate electric field
+[Ex, Ey] = gradient(u_interp);
