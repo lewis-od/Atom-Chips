@@ -30,7 +30,7 @@ axis equal;
 %% Specify boundary conditions
 % Volatage of 1 on top edge
 applyBoundaryCondition(model, 'dirichlet', 'Edge', 4, 'r', V0);
-% Voltage of 2 on bottom edge
+% Voltage of -1 on bottom edge
 applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', -V0);
 % Normal dervative must be 0 at all other boundaries
 applyBoundaryCondition(model, 'neumann', 'Edge', [1,3,5,6,7,8], 'q', 0, 'g', 0);
@@ -73,12 +73,14 @@ axis equal;
 
 %% Calculate electric field
 [Ex, Ey] = gradient(u_interp);
+Ex = -1.*Ex;
+Ey = -1.*Ey;
 
-% Prepare for Fourier transform
+% Remove infinities
 Ex(isnan(Ex)) = 0.0;
 Ey(isnan(Ey)) = 0.0;
 
-%% Calculate magnetic field
+%% Calculate low-pass filter
 % Ohm's law
 jx = sigma.*Ex;
 jy = sigma.*Ey;
@@ -91,13 +93,21 @@ ky = (0:1:length(jy));
 k = sqrt(kx.^2 + ky.^2);
 f_hat = (mu_0/2)*d .* ((1-exp(-d*k))./(k*d)) .* exp(-k.*z);
 
-f_hat(isnan(f_hat)) = 0.0; % Prepare for inverse transform
+f_hat(isnan(f_hat)) = 0.0; % Remove infinities for inverse transform
 f = real(ifft2(f_hat)); % Calculate f in real space
 
-%% Apply convolution theorem
+%% Calculate B using the convolution theorem
 Bx = conv2(jy, f, 'same');
 By = -conv2(jx, f, 'same');
 
+% Plot results
 figure(4);
 B = sqrt(Bx.^2 + By.^2);
 surf(xq, yq, B, 'EdgeColor', 'none');
+c = colorbar();
+c.Label.String = '|B|';
+c.Label.FontSize = 16;
+title('B-Field for z=0.5 and d=0.1');
+xlabel('x', 'FontSize', 16);
+ylabel('y', 'FontSize', 16);
+view(2);
