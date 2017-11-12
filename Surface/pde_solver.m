@@ -57,7 +57,7 @@ plot(2).Label.FontSize = 16;
 axis equal;
 
 %% Interpolate from mesh to a square grid
-xq = linspace(-1, 1, 200);
+xq = linspace(-1, 1, 300);
 yq = xq;
 [xq, yq] = meshgrid(xq, yq);
 u_interp = interpolateSolution(result, xq, yq);
@@ -66,9 +66,12 @@ u_interp = reshape(u_interp, [length(xq), length(yq)]);
 figure(3);
 surf(xq, yq, u_interp, 'Mesh', 'no', 'FaceColor', 'interp');
 view(2);
-xlabel('x');
-ylabel('y');
-colorbar();
+title('Interpolated Solution', 'FontSize', 18);
+xlabel('x', 'FontSize', 16);
+ylabel('y', 'FontSize', 16);
+c = colorbar();
+c.Label.String = "\phi (x,y) [V]";
+c.Label.FontSize = 16;
 axis equal;
 
 %% Calculate electric field
@@ -107,7 +110,7 @@ surf(xq, yq, B, 'EdgeColor', 'none');
 c = colorbar();
 c.Label.String = '|B|';
 c.Label.FontSize = 16;
-title('B-Field for z=0.5 and d=0.1');
+title('B-Field for z=0.5 and d=0.1', 'FontSize', 18);
 xlabel('x', 'FontSize', 16);
 ylabel('y', 'FontSize', 16);
 view(2);
