@@ -65,6 +65,7 @@ u_interp = reshape(u_interp, [length(xq), length(yq)]);
 
 figure(3);
 surf(xq, yq, u_interp, 'Mesh', 'no', 'FaceColor', 'interp');
+colormap('hsv');
 view(2);
 title('Interpolated Solution', 'FontSize', 18);
 xlabel('x', 'FontSize', 16);
@@ -106,7 +107,8 @@ By = -conv2(jx, f, 'same');
 % Plot results
 figure(4);
 B = sqrt(Bx.^2 + By.^2);
-surf(xq, yq, B, 'EdgeColor', 'none');
+surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
+colormap('hsv');
 c = colorbar();
 c.Label.String = '|B|';
 c.Label.FontSize = 16;
