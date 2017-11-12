@@ -108,7 +108,7 @@ By = -conv2(jx, f, 'same');
 figure(4);
 B = sqrt(Bx.^2 + By.^2);
 surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
-colormap('hsv');
+colormap('jet');
 c = colorbar();
 c.Label.String = '|B|';
 c.Label.FontSize = 16;
