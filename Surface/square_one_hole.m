@@ -41,7 +41,7 @@ colormap('jet');
 c = colorbar();
 c.Label.String = '|B|';
 c.Label.FontSize = 16;
-title('B-Field for z=0.5 and d=0.1', 'FontSize', 18);
+title(['B-Field for z=' num2str(z) ' and d=' num2str(d)], 'FontSize', 18);
 xlabel('x', 'FontSize', 16);
 ylabel('y', 'FontSize', 16);
 view(2);
