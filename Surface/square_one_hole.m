@@ -19,7 +19,7 @@ gm = [R1, C1];
 sf = 'R1-C1';
 ns = char('R1', 'C1')';
 
-[phi, xq, yq, Bx, By] = calc_field(params, gm, ns, sf, [4, 2, 1, 3, 5, 6, 7, 8]);
+[phi, xq, yq, Bx, By] = calc_field(params, gm, ns, sf);
 
 % Plot results
 figure(1);
