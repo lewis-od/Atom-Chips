@@ -1,7 +1,7 @@
 function [] = plot_results(phi, Bx, By, xq, yq, z, d)
 %plot_results Plot the calculated potential and field
 
-figure(1);
+figure();
 surf(xq, yq, phi, 'EdgeColor', 'none', 'FaceColor', 'interp');
 title("Electric Potential", 'FontSize', 18);
 xlabel('x', 'FontSize', 16);
@@ -13,7 +13,7 @@ colormap jet;
 axis equal;
 view(2);
 
-figure(2);
+figure();
 B = sqrt(Bx.^2 + By.^2);
 surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
 colormap('jet');
