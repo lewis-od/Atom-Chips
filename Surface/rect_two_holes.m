@@ -8,8 +8,6 @@ V0 = 1.0; % Voltage is V0 and -V0 at ends of conductor [V]
 d = 0.1; % Thickness of conductor [m]
 z = 0.5; % Distance from conductor [m]
 
-params = [sigma, d, z];
-
 % Specify geometry
 R1 = [3, 4, -1, 1, 1, -1, 2, 2, -2, -2]; % 1x2 Rectangle
 C1 = [1, 0, 0.75, 0.5]'; % Circle of radius 0.5 centreed at (0, 1)
@@ -28,13 +26,13 @@ zero_index = size(xq);
 zero_index = ceil(zero_index(2)/2);
 for i = 1:4
     subplot(2, 2, i);
-    params = [sigma, d, 0.1*i];
-    [Bx, By] = calc_field(params, phi);
+    z = 0.1*i;
+    [Bx, By] = calc_field(phi, sigma, d, z);
     B = sqrt(Bx.^2 + By.^2);
     yq_slice = yq(:, zero_index);
     B_slice = B(:, zero_index);
     plot(yq_slice, B_slice);
-    title(['z=' num2str(params(3)) '; x=0']);
+    title(['z=' num2str(z) '; x=0']);
     xlabel('y');
     ylabel('B');
 end

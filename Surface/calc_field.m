@@ -1,11 +1,8 @@
-function [Bx, By] = calc_field(params, phi)
+function [Bx, By] = calc_field(phi, sigma, d, z)
 %calc_field_from_potential Calculate the magnetic field from the given
 %electric potential
 
 mu_0 = pi*4e-7; % Permeability of free space
-sigma = params(1);
-d = params(2);
-z = params(3);
 
 % Calculate electric field
 [Ex, Ey] = gradient(phi);

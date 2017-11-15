@@ -8,8 +8,6 @@ V0 = 1.0; % Voltage is V0 and -V0 at ends of conductor [V]
 d = 0.1; % Thickness of conductor [m]
 z = 0.5; % Distance from conductor [m]
 
-params = [sigma, d, z];
-
 % Specify geometry
 R1 = [3, 4, -1, 1, 1, -1, 1, 1, -1, -1];
 C1 = [1, 0, 0, 0.5]';
@@ -20,7 +18,7 @@ sf = 'R1-C1';
 ns = char('R1', 'C1')';
 
 [phi, xq, yq, model, result] = calc_potential(V0, gm, ns, sf);
-[Bx, By] = calc_field(params, phi);
+[Bx, By] = calc_field(phi, sigma, d, z);
 
 % Plot results
 plot_results(phi, Bx, By, xq, yq, z, d);
