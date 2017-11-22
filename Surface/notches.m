@@ -25,9 +25,9 @@ specifyCoefficients(model, 'm', 0, 'd', 0, 'c', 1, 'a', 0, 'f', 0);
 
 % Specify boundary conditions
 % Volatage of V0 on top edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 1, 'r', 56.6e-3);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 1, 'r', 56.6e-3/2);
 % Voltage of -V0 on bottom edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', -56.6e-3);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', -56.6e-3/2);
 % Normal dervative must be 0 at all other boundaries
 applyBoundaryCondition(model, 'neumann', 'Edge', neumann_edges, 'q', 0, 'g', 0);
 
@@ -77,7 +77,7 @@ c.FontSize = 16;
 colormap jet;
 xlabel('x [\mum]', 'FontSize', 16);
 ylabel('y [\mum]', 'FontSize', 16);
-title(['Magnetic Field at z=' num2str(z)], 'FontSize', 18);
+title(['Magnetic Field at z=' num2str(z) '\mum'], 'FontSize', 18);
 
 B_slice_x = B(y0, :);
 xq_slice_x = xq(y0, :);
