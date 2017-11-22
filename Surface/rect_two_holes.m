@@ -28,23 +28,39 @@ dims = size(xq);
 x0 = ceil(dims(2)/2);
 y0 = ceil(dims(1)/2);
 
+zq = linspace(0, 1.5, 7); % z values to evaluate b at
+zq = zq(2:end); % Don't evaluate at z=0
+min_B = zeros(1, length(zq)); % Array to hold min value of B for each z
 figure();
 hold on;
-zq = linspace(0, 1.5, 7); % z values to evaluate b at
-min_B = zeros(1, length(zq)); % Array to hold min value of B for each z
 for i = 1:length(zq)
     z = zq(i);
     [Bx, By] = calc_field(phi, sigma, d, z);
     B = sqrt(Bx.^2 + By.^2);
     min_B(i) = B(y0, x0); % B_min is at the origin in this case
     yq_slice = yq(:, x0); % y values corresponding to x=0
-    B_slice = B(:, x0); % B values corresponding to x=0
-    plot(yq_slice, B_slice);
-    title('x=0');
-    xlabel('y');
-    ylabel('B');
+    xq_slice = xq(y0, :); % x values corresponding to y=0
+    B_slice_y = B(:, x0); % B values corresponding to x=0
+    B_slice_x = B(y0, :); % B values corresponding to y=0
+    subplot(1, 2, 1);
+    hold on;
+    plot(yq_slice, B_slice_y);
+    subplot(1, 2, 2);
+    hold on;
+    plot(xq_slice, B_slice_x);
 end
-legend(cellstr(num2str(zq', 'z=%-d')));
+subplot(1, 2, 1);
+title('x=0');
+xlabel('y');
+ylabel('|B| [T]');
+legend(cellstr(num2str(zq', 'z=%.2f')));
+hold off;
+
+subplot(1, 2, 2);
+title('y=0');
+xlabel('x');
+ylabel('|B| [T]');
+legend(cellstr(num2str(zq', 'z=%.2f')));
 hold off;
 
 figure();
