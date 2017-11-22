@@ -4,15 +4,15 @@ clear all;
 
 %% Parameters
 sigma = 5.96e7; % Conductivity of conductor [S*m^-1]
-V0 = 1.0; % Voltage is V0 and -V0 at ends of conductor [V]
+V0 = 5.0; % Voltage is V0 and -V0 at ends of conductor [V]
 d = 0.1; % Thickness of conductor [m]
-z = 0.5; % Distance from conductor [m]
+z = 0.25; % Distance from conductor [m]
 
 %% Specify geometry
-R1 = [3, 4, -1, 1, 1, -1, 2, 2, -2, -2]; % 1x2 Rectangle
-C1 = [1, 0, 0.75, 0.5]'; % Circle of radius 0.5 centreed at (0, 1)
+R1 = [3, 4, -2, 2, 2, -2, 4, 4, -4, -4]; % 2x4 Rectangle
+C1 = [1, 0, 1.5, 0.25]'; % Circle of radius 0.25 centreed at (0, 1.5)
 C1 = [C1;zeros(length(R1) - length(C1),1)];
-C2 = [1, 0, -0.75, 0.5]'; % Circle of radius 0.5 centreed at (0, -1)
+C2 = [1, 0, -1.5, 0.25]'; % Circle of radius 0.25 centreed at (0, -1.5)
 C2= [C2;zeros(length(R1) - length(C2),1)];
 R1 = R1';
 gm = [R1, C1, C2];
@@ -28,8 +28,9 @@ dims = size(xq);
 x0 = ceil(dims(2)/2);
 y0 = ceil(dims(1)/2);
 
-zq = linspace(0, 1.5, 7); % z values to evaluate b at
-zq = zq(2:end); % Don't evaluate at z=0
+% zq = linspace(0, 1.5, 7); % z values to evaluate b at
+% zq = zq(2:end); % Don't evaluate at z=0
+zq = [z];
 min_B = zeros(1, length(zq)); % Array to hold min value of B for each z
 figure();
 hold on;
@@ -67,17 +68,3 @@ figure();
 plot(zq, min_B);
 xlabel('z');
 ylabel('B(0, 0, z)');
-
-% figure();
-% for i = 1:4
-%     subplot(2, 2, i);
-%     z = 0.1*i;
-%     [Bx, By] = calc_field(phi, sigma, d, z);
-%     B = sqrt(Bx.^2 + By.^2);
-%     xq_slice = xq(y0, :);
-%     B_slice = B(y0, :);
-%     plot(xq_slice, B_slice);
-%     title(['z=' num2str(z) '; y=0']);
-%     xlabel('x');
-%     ylabel('B');
-% end
