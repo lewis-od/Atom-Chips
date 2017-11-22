@@ -1,5 +1,11 @@
 %% Calculate B field from 2 notches in a conductor
 clear all;
+
+%% Parameters
+z = 2;
+d = 0.25;
+sigma = 44.2e6; % Conductivity of gold (S m^-1)
+
 %% Specify Geometry
 model = createpde(1);
 R1 = [3, 4, -5, 5, 5, -5, 5, 5, -5, -5]';
@@ -47,52 +53,78 @@ surf(xq, yq, phi, 'EdgeColor', 'none', 'FaceColor', 'interp');
 view(2);
 c = colorbar();
 c.Label.String = '\phi [V]';
-c.Label.FontSize = 14;
+c.Label.FontSize = 16;
+c.FontSize = 16;
 axis equal;
 colormap jet;
-title('Electric Potential', 'FontSize', 16);
-xlabel('x [\mum]', 'FontSize', 14);
-ylabel('y [\mum]', 'FontSize', 14);
-
-sigma = 44.2e6; % Conductivity of gold (S m^-1)
-
-% [Bx, By] = calc_field(phi, sigma, 2.5, 5);
-% B = sqrt(Bx.^2 + By.^2);
-% figure();
-% surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
-% view(2);
-% c = colorbar();
-% c.Label.String = '\phi [V]';
-% colormap jet;
+title('Electric Potential', 'FontSize', 18);
+xlabel('x [\mum]', 'FontSize', 16);
+ylabel('y [\mum]', 'FontSize', 16);
+hold on;
+gplot = pdegplot(model);
+gplot.Color = [0 0 0];
 
 %% Calc and plot B field
-
-zq = [2, 5, 10];
+[Bx, By] = calc_field(phi, sigma, d, z);
+B = sqrt(Bx.^2 + By.^2);
 figure();
-for i = 1:length(zq)
-    [Bx, By] = calc_field(phi, sigma, 0.25, zq(i));
-    B = sqrt(Bx.^2 + By.^2);
-    Bx_slice_y = Bx(y0, :);
-    By_slice_y = By(y0, :);
-    x_slice_y = xq(y0, :);
+surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
+view(2);
+c = colorbar();
+c.Label.String = '|B| [T]';
+c.Label.FontSize = 16;
+c.FontSize = 16;
+colormap jet;
+xlabel('x [\mum]', 'FontSize', 16);
+ylabel('y [\mum]', 'FontSize', 16);
+title(['Magnetic Field at z=' num2str(z)], 'FontSize', 18);
 
-    subplot(1, 2, 1);
-    hold on;
-    plot(x_slice_y, Bx_slice_y);
-    
-    subplot(1, 2, 2);
-    hold on;
-    plot(x_slice_y, By_slice_y);
-end
+B_slice_x = B(y0, :);
+xq_slice_x = xq(y0, :);
+B_slice_y = B(:, x0);
+yq_slice_y = yq(:, x0);
+
+figure();
+title(['Magnetic Field at z=' num2str(z) '\mum'], 'FontSize', 18);
 
 subplot(1, 2, 1);
-xlabel('x [\mum]', 'FontSize', 14);
-ylabel('B_x [T]', 'FontSize', 14);
-legend(cellstr(num2str(zq', 'z=%.2f')));
-hold off;
+plot(xq_slice_x, B_slice_x);
+xlabel('x [\mum]', 'FontSize', 16);
+ylabel('B [T]', 'FontSize', 16);
+title('y = 0\mum', 'FontSize', 16);
 
 subplot(1, 2, 2);
-xlabel('x [\mum]', 'FontSize', 14);
-ylabel('B_y [T]', 'FontSize', 14);
-legend(cellstr(num2str(zq', 'z=%.2f')));
-hold off;
+plot(yq_slice_y, B_slice_y);
+xlabel('y [\mum]', 'FontSize', 16);
+ylabel('B [T]', 'FontSize', 16);
+title('x = 0\mum', 'FontSize', 16);
+
+% zq = [2, 5, 10];
+% figure();
+% for i = 1:length(zq)
+%     [Bx, By] = calc_field(phi, sigma, 0.25, zq(i));
+%     B = sqrt(Bx.^2 + By.^2);
+%     Bx_slice_y = Bx(y0, :);
+%     By_slice_y = By(y0, :);
+%     x_slice_y = xq(y0, :);
+% 
+%     subplot(1, 2, 1);
+%     hold on;
+%     plot(x_slice_y, Bx_slice_y);
+%     
+%     subplot(1, 2, 2);
+%     hold on;
+%     plot(x_slice_y, By_slice_y);
+% end
+% 
+% subplot(1, 2, 1);
+% xlabel('x [\mum]', 'FontSize', 14);
+% ylabel('B_x [T]', 'FontSize', 14);
+% legend(cellstr(num2str(zq', 'z=%.2f')));
+% hold off;
+% 
+% subplot(1, 2, 2);
+% xlabel('x [\mum]', 'FontSize', 14);
+% ylabel('B_y [T]', 'FontSize', 14);
+% legend(cellstr(num2str(zq', 'z=%.2f')));
+% hold off;
