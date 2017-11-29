@@ -23,7 +23,7 @@ ky = (0:1:length(jy));
 
 [kx, ky] = meshgrid(kx, ky);
 k = sqrt(kx.^2 + ky.^2);
-f_hat = (mu_0/2)*d .* ((1-exp(-d*k))./(k*d)) .* exp(-k.*z);
+f_hat = (mu_0/2) .* ((1-exp(-d*k))./(k)) .* exp(-k.*z);
 
 f_hat(isnan(f_hat)) = 0.0; % Remove infinities for inverse transform
 f = real(ifft2(f_hat)); % Calculate f in real space
