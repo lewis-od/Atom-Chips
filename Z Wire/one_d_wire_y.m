@@ -26,7 +26,7 @@ wz = zeros(1, N); % All wires in z=0 plane
 
 % First end wire - parallel to y axis
 wx(1:N2) = -(L1 / 2);
-wy(1:N2) = linspace(L2, 0, N2);
+wy(1:N2) = linspace(-L2, 0, N2);
 
 % Central wire - parallel to x axis
 wx((N2+1):(N1+N2)) = linspace(-(L1/2), L1/2, N1);
@@ -34,7 +34,7 @@ wy((N2+1):(N1+N2)) = 0.0;
 
 % Second end wire - parallel to y axis
 wx((N1+N2+1):N) = (L1 / 2);
-wy((N1+N2+1):N) = linspace(0, -L2, N2);
+wy((N1+N2+1):N) = linspace(0, L2, N2);
 
 %% Setup arrays for axes and the field
 % Points in space where we will evaluate the field
@@ -72,7 +72,7 @@ for i = 1:Nx
     end
 end
 
-Bz = Bz + B_bias;
+By = By + B_bias;
 
 %% Plot |B|
 figure();

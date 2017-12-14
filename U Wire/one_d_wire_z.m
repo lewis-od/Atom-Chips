@@ -72,7 +72,7 @@ for k = 1:Nz
     end
 end
 
-Bz = Bz + B_bias;
+By = By + B_bias;
 
 %% Plot |B|
 figure();

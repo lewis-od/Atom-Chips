@@ -13,7 +13,7 @@ B_bias = 162e-4; % Strength of bias field (T)
 Nx = 600;
 
 % Length of each line segment
-dL = 1e-6;
+dL = 0.5e-6;
 N1 = floor(L1 / dL);
 N2 = floor(L2 / dL);
 N = N1 + 2*N2;
@@ -72,7 +72,7 @@ for i = 1:Nx
     end
 end
 
-Bz = Bz + B_bias;
+By = By + B_bias;
 
 %% Plot |B|
 figure();
