@@ -2,8 +2,8 @@
 clear all;
 
 %% Parameters
-z = 2;
-d = 0.25;
+z = 2e-6;
+d = 0.25e-6;
 sigma = 44.2e6; % Conductivity of gold (S m^-1)
 
 %% Specify Geometry
@@ -36,9 +36,9 @@ generateMesh(model, 'Hmax', 0.1);
 result = solvepde(model);
 
 %% Interpolate onto grid
-res = 501;
-xq = linspace(-5, 5, res);
-yq = linspace(-5, 5, res);
+res = 100;
+xq = linspace(-5, 5, 10*res + 1);
+yq = linspace(-5, 5, 10*res + 1);
 [xq, yq] = meshgrid(xq, yq);
 
 dims = size(xq);
@@ -47,6 +47,10 @@ y0 = ceil(dims(1)/2);
 
 phi = interpolateSolution(result, xq, yq);
 phi = reshape(phi, size(xq));
+
+xq = xq.*1e-6;
+yq = yq.*1e-6;
+res = res.*1e6;
 
 figure();
 surf(xq, yq, phi, 'EdgeColor', 'none', 'FaceColor', 'interp');
@@ -61,11 +65,9 @@ title('Electric Potential', 'FontSize', 18);
 xlabel('x [\mum]', 'FontSize', 16);
 ylabel('y [\mum]', 'FontSize', 16);
 hold on;
-gplot = pdegplot(model);
-gplot.Color = [0 0 0];
 
 %% Calc and plot B field
-[Bx, By] = calc_field(phi, sigma, d, z);
+[Bx, By] = calc_field(phi, sigma, res, d, z);
 B = sqrt(Bx.^2 + By.^2);
 figure();
 surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');

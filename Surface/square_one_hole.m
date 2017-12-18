@@ -18,7 +18,7 @@ sf = 'R1-C1';
 ns = char('R1', 'C1')';
 
 [phi, xq, yq, model, result] = calc_potential(V0, gm, ns, sf);
-[Bx, By] = calc_field(phi, sigma, d, z);
+[Bx, By] = calc_field(phi, sigma, 100, d, z);
 
 % Plot results
 plot_results(phi, Bx, By, xq, yq, z, d);

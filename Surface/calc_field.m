@@ -1,4 +1,4 @@
-function [Bx, By] = calc_field(phi, sigma, d, z)
+function [Bx, By] = calc_field(phi, sigma, sr, d, z)
 %calc_field_from_potential Calculate the magnetic field from the given
 %electric potential
 
@@ -18,12 +18,15 @@ jx = sigma.*Ex;
 jy = sigma.*Ey;
 
 % Calculate f(kx, ky, z, d) in Fourier space
-kx = (0:1:length(jx));
-ky = (0:1:length(jy));
+dims = size(jx);
+Nx = dims(2);
+Ny = dims(1);
+kx = (0:1:(Nx-1)).*(sr/Nx);
+ky = (0:1:(Ny-1)).*(sr/Ny);
 
 [kx, ky] = meshgrid(kx, ky);
 k = sqrt(kx.^2 + ky.^2);
-f_hat = (mu_0/2) .* ((1-exp(-d*k))./(k)) .* exp(-k.*z);
+f_hat = (mu_0/2) .* exp(-k.*z);
 
 f_hat(isnan(f_hat)) = 0.0; % Remove infinities for inverse transform
 f = real(ifft2(f_hat)); % Calculate f in real space
