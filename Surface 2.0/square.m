@@ -71,50 +71,45 @@ dims = size(x);
 dxN = floor(dims(2)/Nx);
 dyN = floor(dims(1)/Ny);
 
-xq = linspace(-1, 1, 50);
-yq = linspace(-1, 1, 50);
+resolution = 200;
+xq = linspace(-1, 1, resolution);
+yq = linspace(-1, 1, resolution);
+[xq, yq] = meshgrid(xq, yq);
 
-By = zeros(50, 50);
-Bz = zeros(50, 50);
+By = zeros(resolution, resolution);
+Bz = zeros(resolution, resolution);
 J = zeros(Ny, Nx);
-% Loop over each point in space
-for i = 1:length(xq);
-    for j = 1:length(yq);
-        xn = xq(i);
-        yn = yq(j);
-        % Loop over all current elements of conductor
-        for nx = 1:Nx
-            for ny = 1:Ny
-                % Centre of current element
-                cx = (nx-1)*dx + dx/2;
-                cx = cx - 1;
-                cy = (ny-1)*dy + dy/2;
-                cy = cy - 1;
-                
-                xN_min = (nx-1)*dxN + 1;
-                xN_max = nx*dxN;
-                yN_min = (ny-1)*dyN + 1;
-                yN_max = ny*dyN;
-                
-                Jn = Jx(yN_min:yN_max, xN_min:xN_max);
-                Jn = mean(mean(Jn));
-                J(ny, nx) = Jn;
-                [dBy, dBz] = eval_B(xn-cx, yn-cy, z, dy, dx, Jn);
-                By(j,i) = By(j,i) + dBy;
-                Bz(j,i) = Bz(j,i) + dBz;
-            end
-        end
+% Loop over all current elements of conductor
+for nx = 1:Nx
+    for ny = 1:Ny
+        % Centre of current element
+        cx = (nx-1)*dx + dx/2;
+        cx = cx - 1;
+        cy = (ny-1)*dy + dy/2;
+        cy = cy - 1;
+
+        xN_min = (nx-1)*dxN + 1;
+        xN_max = nx*dxN;
+        yN_min = (ny-1)*dyN + 1;
+        yN_max = ny*dyN;
+
+        Jn = Jx(yN_min:yN_max, xN_min:xN_max);
+        Jn = mean(mean(Jn));
+        J(ny, nx) = Jn;
+        [dBy, dBz] = eval_B(xq-cx, yq-cy, z, dy, dx, Jn);
+        By = By + dBy;
+        Bz = Bz + dBz;
     end
 end
 
 B = sqrt(By.^2 + Bz.^2);
-[xq, yq] = meshgrid(xq, yq);
 subplot(1, 2, 1);
 surf(xq, yq, B, 'EdgeColor', 'none');
 view(2);
 xlabel('x');
 ylabel('y');
 title('B Field');
+colorbar();
 
 subplot(1, 2, 2);
 surf(x, y, rho, 'EdgeColor', 'none');
@@ -122,3 +117,4 @@ view(2);
 xlabel('x');
 ylabel('y');
 title('Resistivity');
+colorbar();
