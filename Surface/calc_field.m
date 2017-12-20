@@ -14,11 +14,11 @@ Ex(isnan(Ex)) = 0.0;
 Ey(isnan(Ey)) = 0.0;
 
 % Ohm's law
-Jx = sigma.*Ex;
-Jy = sigma.*Ey;
+jx = sigma.*Ex;
+jy = sigma.*Ey;
 
 % Calculate f(kx, ky, z, d) in Fourier space
-dims = size(Jx);
+dims = size(jx);
 Nx = dims(2);
 Ny = dims(1);
 kx = (0:1:(Nx-1)).*(sr/Nx);
@@ -26,30 +26,14 @@ ky = (0:1:(Ny-1)).*(sr/Ny);
 
 [kx, ky] = meshgrid(kx, ky);
 k = sqrt(kx.^2 + ky.^2);
-f_hat = (mu_0/2) .* exp(-k.*z); % Calculate f in inverse space
+f_hat = (mu_0/2) .* exp(-k.*z);
 
-Jx_hat = fft2(Jx);
-Jy_hat = fft2(Jy);
+f_hat(isnan(f_hat)) = 0.0; % Remove infinities for inverse transform
+f = real(ifft2(f_hat)); % Calculate f in real space
 
-Jx_hat = fftshift(Jx_hat);
-Jy_hat = fftshift(Jy_hat);
-
-Bx_hat = Jy_hat .* f_hat;
-By_hat = -Jx_hat .* f_hat;
-
-Bx_hat(isnan(Bx_hat)) = 0.0; % Remove infinities for inverse transform
-By_hat(isnan(By_hat)) = 0.0; % Remove infinities for inverse transform
-
-Bx = abs(ifft2(Bx_hat));
-By = abs(ifft2(By_hat));
-
-% Smooth out noise
-for i = 1:5
-   Bx = smoothdata(Bx, 1);
-   Bx = smoothdata(Bx, 2);
-   By = smoothdata(By, 1);
-   By = smoothdata(By, 2);
-end
+% Calculate B using the convolution theorem
+Bx = conv2(jy, f, 'same');
+By = -conv2(jx, f, 'same');
 
 end
 

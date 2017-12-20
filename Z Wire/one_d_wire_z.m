@@ -7,7 +7,7 @@ mu_0 = pi*4e-7;
 I = 2; % Current through wire (A)
 L1 = 250e-6; % Length of central wire (m)
 L2 = L1 * 5; % Length of end wires (m)
-B_bias = 400e-4; % Strength of bias field (T)
+B_bias = 162e-4; % Strength of bias field (T)
 
 % How many points to evaluate the field at in each spatial dimension
 Nz = 500;
