@@ -4,13 +4,14 @@
 clear all;
 
 %% Parameters and constants
-sigma = 5.96e7; % Conductivity of conductor [S*m^-1]
+sigma_0 = 5.96e7; % Conductivity of conductor [S*m^-1]
+rho_0 = 1./sigma_0;
 V0 = 1.0; % Voltage is V0 and -V0 at ends of conductor [V]
 z = 0.5; % Distance from conductor [m]
 mu_0 = 4e-7 * pi; % Permeability of free space
 
-dx = 0.1;
-dy = 0.1;
+dx = 0.05;
+dy = 0.05;
 
 %% Set up PDE solver
 % Specify geometry
@@ -28,9 +29,9 @@ specifyCoefficients(model, 'm', 0, 'd', 0, 'c', 1, 'a', 0, 'f', 0);
 
 % Specify boundary conditions
 % Volatage of V0 on top edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', V0);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', -V0);
 % Voltage of -V0 on bottom edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 4, 'r', -V0);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 4, 'r', V0);
 % Normal dervative must be 0 at all other boundaries
 applyBoundaryCondition(model, 'neumann', 'Edge', [1 3], 'q', 0, 'g', 0);
 
@@ -52,6 +53,10 @@ phi = reshape(phi, size(x));
 Ex = -Ex;
 Ey = -Ey;
 
+% Gaussian spike of resisitivity at centre
+rho = 1e6*exp(-(x.^2+y.^2)./0.005) + rho_0;
+sigma = 1./rho;
+
 % y component of current density should be ~0. Only consider Jx
 Jx = sigma.*Ex; % Ohm's law
 
@@ -71,15 +76,20 @@ yq = linspace(-1, 1, 50);
 
 By = zeros(50, 50);
 Bz = zeros(50, 50);
+J = zeros(Ny, Nx);
 % Loop over each point in space
-for xn = xq
-    for yn = yq
+for i = 1:length(xq);
+    for j = 1:length(yq);
+        xn = xq(i);
+        yn = yq(j);
         % Loop over all current elements of conductor
         for nx = 1:Nx
             for ny = 1:Ny
                 % Centre of current element
-                cx = nx*dx/2;
-                cy = ny*dy/2;
+                cx = (nx-1)*dx + dx/2;
+                cx = cx - 1;
+                cy = (ny-1)*dy + dy/2;
+                cy = cy - 1;
                 
                 xN_min = (nx-1)*dxN + 1;
                 xN_max = nx*dxN;
@@ -88,13 +98,27 @@ for xn = xq
                 
                 Jn = Jx(yN_min:yN_max, xN_min:xN_max);
                 Jn = mean(mean(Jn));
+                J(ny, nx) = Jn;
                 [dBy, dBz] = eval_B(xn-cx, yn-cy, z, dy, dx, Jn);
-                By = By + dBy;
-                Bz = Bz + dBz;
+                By(j,i) = By(j,i) + dBy;
+                Bz(j,i) = Bz(j,i) + dBz;
             end
         end
     end
 end
 
 B = sqrt(By.^2 + Bz.^2);
+[xq, yq] = meshgrid(xq, yq);
+subplot(1, 2, 1);
 surf(xq, yq, B, 'EdgeColor', 'none');
+view(2);
+xlabel('x');
+ylabel('y');
+title('B Field');
+
+subplot(1, 2, 2);
+surf(x, y, rho, 'EdgeColor', 'none');
+view(2);
+xlabel('x');
+ylabel('y');
+title('Resistivity');
