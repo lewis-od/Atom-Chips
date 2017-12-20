@@ -22,18 +22,18 @@ a = (max(x) - min(x))/2; % Boudaries at (+/-)a
 
 [x, y] = meshgrid(x, y);
 
-phi = -V0/a .* x;
+phi = V0/a .* x;
 
 %% Calculate current density
 [Ex, Ey] = gradient(phi);
-Ex = -Ex;
-Ey = -Ey;
+Ex = -Ex; % Ey = 0 so it's omitted
 
 % Gaussian spike of resisitivity at centre
 rho = 1e6*exp(-(x.^2+y.^2)./0.005) + rho_0;
+% rho = ones(size(x)).*rho_0;
 sigma = 1./rho;
 
-% y component of current density should be ~0. Only consider Jx
+% Again, Jy = 0 so it's omitted
 Jx = sigma.*Ex; % Ohm's law
 
 %% Apply finite element method
@@ -70,7 +70,8 @@ for nx = 1:Nx
         yN_min = (ny-1)*dyN + 1;
         yN_max = ny*dyN;
         
-        % Treat the segment as having uniform current density
+        % Treat the segment as having uniform current density, given by
+        % the average of the density across the element
         Jn = Jx(yN_min:yN_max, xN_min:xN_max);
         Jn = mean(mean(Jn));
         
@@ -86,15 +87,19 @@ B = sqrt(By.^2 + Bz.^2);
 subplot(1, 2, 1);
 surf(xq, yq, B, 'EdgeColor', 'none');
 view(2);
-xlabel('x');
-ylabel('y');
-title('B Field');
-colorbar();
+xlabel('x', 'FontSize', 18);
+ylabel('y', 'FontSize', 18);
+title('Magnetic Field', 'FontSize', 18);
+c = colorbar();
+c.Label.String = "|B| [T]"
+c.Label.FontSize = 18;
 
 subplot(1, 2, 2);
 surf(x, y, rho, 'EdgeColor', 'none');
 view(2);
-xlabel('x');
-ylabel('y');
-title('Resistivity');
-colorbar();
+xlabel('x', 'FontSize', 18);
+ylabel('y', 'FontSize', 18);
+title('Resistivity', 'FontSize', 18);
+c = colorbar();
+c.Label.String = "\rho [\Omegam]"
+c.Label.FontSize = 18;
