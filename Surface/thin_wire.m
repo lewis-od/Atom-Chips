@@ -34,7 +34,7 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 3, 'r', -V0);
 applyBoundaryCondition(model, 'neumann', 'Edge', [2 4], 'q', 0, 'g', 0);
 
 % Generate mesh and solve PDE
-generateMesh(model, 'Hmax', 0.01);
+generateMesh(model, 'Hmax', 0.1);
 result = solvepde(model);
 
 % Assume geometry is given by rectangle. Length of an array specifying a
@@ -48,7 +48,7 @@ min_x = min(rect_x);
 min_y = min(rect_y);
 
 % Interpolate solution from mesh onto linearly spaced grid
-res = 50; % How many points per unit
+res = 200; % How many points per unit
 xq = linspace(min_x, max_x, (max_x-min_x)*res+1);
 yq = linspace(min_y, max_y, (max_y-min_y)*res+1);
 [xq, yq] = meshgrid(xq, yq);
@@ -74,7 +74,7 @@ y0 = ceil(dims(1)/2);
 % phi = padarray(phi, diff./2, 0, 'both');
 
 %% Calculate magnetic field
-[Bx, By] = calc_field(phi, sigma, res, d, z);
+[Bx, By] = calc_field_alt(phi, sigma, res, d, z);
 
 % Trim wire between y=-1 and y=1 so that the effects of the ends of the
 % wire are negligible and the field can be compared to that of an infinite
