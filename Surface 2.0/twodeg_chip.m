@@ -14,8 +14,8 @@ B_bias = 0.081 * 3.4e-10;
 z = 0.5; % z position to evaluate field at
 
 % Size of current elements to consider
-dx = 0.2;
-dy = 0.2;
+dx = 0.1;
+dy = 0.1;
 
 sigma = n*mu*1.6e-19; % Conductivity of 2DEG [S m^-1]
 
@@ -30,8 +30,6 @@ ns = char('R1', 'R2', 'R3')';
 model = createpde(1);
 g = decsg(gm, sf, ns);
 geometryFromEdges(model, g);
-
-pdegplot(model, 'EdgeLabels', 'on');
 
 % Equation is (del)^2 phi = 0 (Laplace's equation)
 specifyCoefficients(model, 'm', 0, 'd', 0, 'c', 1, 'a', 0, 'f', 0);
@@ -98,6 +96,8 @@ xq = linspace(-5, 5, resolution);
 yq = linspace(-5, 5, resolution);
 [xq, yq] = meshgrid(xq, yq);
 
+J_direction = ones(size(x)).*-1;
+
 Bx = zeros(resolution, resolution);
 By = zeros(resolution, resolution);
 Bz = zeros(resolution, resolution);
@@ -130,15 +130,21 @@ for nx = 1:Nx
             continue
         end
         
+        Jnx_mean = mean(mean(Jn_x));
+        Jny_mean = mean(mean(Jn_y));
+        
+        Jn_dir = abs(Jnx_mean) > abs(Jny_mean);
+        J_direction(yN_min:yN_max, xN_min:xN_max) = Jn_dir;
+        
         % Calculate the field due to the current segment
         dBx = 0;
         dBy = 0;
         dBz = 0;
-        if round(mean(Jx > Jy))
-            % Current in x direction contributes to By
+        if Jn_dir
+            % Current is in x direction - contributes to By
             [dBy, dBz] = eval_B(xq-cx, yq-cy, z, dy, dx, Jn);
         else
-            % Current in y direction contributes to Bx
+            % Current is in y direction - contributes to Bx
             [dBx, dBz] = eval_B(xq-cx, yq-cy, z, dy, dx, Jn);
         end
         
@@ -152,11 +158,15 @@ Bx = Bx + ones(resolution, resolution).*B_bias;
 B = sqrt(Bx.^2 + By.^2 + Bz.^2);
 
 %% Plot results
+figure();
 surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
-xlabel('x');
-ylabel('y');
-colorbar();
+xlabel('x', 'FontSize', 18);
+ylabel('y', 'FontSize', 18);
+c = colorbar();
+c.Label.String = '|B|';
+c.Label.FontSize = 18;
 colormap jet;
+view(2);
 
 dims = size(xq);
 x0 = ceil(dims(2)/2);
@@ -166,6 +176,6 @@ figure();
 hold on;
 plot(xq(y0, :), B(y0, :));
 plot(yq(:, x0), B(:, x0));
-xlabel('x/y');
-ylabel('|B|');
-legend({'Varying x', 'Varying y'});
+xlabel('x/y', 'FontSize', 18);
+ylabel('|B|', 'FontSize', 18);
+legend({'B(x,0)', 'B(0,y)'}, 'FontSize', 16);
