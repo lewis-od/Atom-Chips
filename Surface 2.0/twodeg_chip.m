@@ -5,7 +5,7 @@
 clear all;
 
 %% Parameters and constants
-V0 = 1; % Voltage difference of 2*V0 across wire
+V0 = 2; % Voltage difference of 2*V0 across wire
 E0 = 0; % Electric field applied across 2DEG [V m^-1]
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
@@ -36,9 +36,9 @@ specifyCoefficients(model, 'm', 0, 'd', 0, 'c', 1, 'a', 0, 'f', 0);
 
 %% Specify boundary conditions
 % Volatage of V0 on top edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 1, 'r', V0);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 1, 'r', 0);
 % Voltage of -V0 on bottom edge
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', -V0);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', V0);
 % Normal dervative must be 0 at all other boundaries
 applyBoundaryCondition(model, 'neumann', 'Edge', 3:17, 'q', 0, 'g', 0);
 
