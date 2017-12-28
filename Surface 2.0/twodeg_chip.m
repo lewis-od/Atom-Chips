@@ -5,25 +5,26 @@
 clear all;
 
 %% Parameters and constants
-V0 = 2; % Voltage difference of 2*V0 across wire
+V0 = (5e5/9.743508582048404)*200; % Voltage difference of V0 across wire
 E0 = 0; % Electric field applied across 2DEG [V m^-1]
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
-B_bias = 0.081 * 3.4e-10 * 5; % Bias field strength [T]
-B_offset = 0.081 * 3.4e-11; % Offset field strength [T]
-z = 0.5; % z position to evaluate field at [um]
+B_bias = 1.54e-4; % Bias field strength [T]
+B_offset = 0.2e-4; % Offset field strength [T]
 
-add_noise = true;
+z = 3; % z position to evaluate field at [um]
 
-% Size of current elements to consider
-dx = 0.05;
-dy = 0.05;
+add_noise = false;
+
+% Size of current elements to consider [um]
+dx = 2;
+dy = 2;
 
 sigma = n*mu*1.6e-19; % Conductivity of 2DEG [S m^-1]
 
 %% Calculate and plot potential
-res = 100; % Points per unit for interpolation
+res = 5; % Points per unit for interpolation
 [x, y, phi] = calc_potential(V0, res);
 
 % Scale down all variables
@@ -35,11 +36,11 @@ dy = dy.*1e-6;
 res = res.*1e-6;
 
 % Plot potential
-surf(x, y, phi, 'EdgeColor', 'none');
-view(2);
-xlim([min(min(x)), max(max(x))]);
-ylim([min(min(y)), max(max(y))]);
-colormap cool;
+% surf(x, y, phi, 'EdgeColor', 'none');
+% view(2);
+% xlim([min(min(x)), max(max(x))]);
+% ylim([min(min(y)), max(max(y))]);
+% colormap cool;
 
 %% Calculate current desnity
 [Ex, Ey] = gradient(phi);
@@ -123,8 +124,8 @@ Jy = sigma.*Ey;
 %% Apply finite element method to calculate magnetic field
 % Points to calculate B at
 resolution = 101;
-xq = linspace(-5e-6, 5e-6, resolution);
-yq = linspace(-5e-6, 5e-6, resolution);
+xq = linspace(-150e-6, 150e-6, resolution);
+yq = linspace(-150e-6, 150e-6, resolution);
 [xq, yq] = meshgrid(xq, yq);
 
 [Bx, By, Bz] = calc_field(x, y, z, Jx, Jy, dx, dy, xq, yq);
@@ -155,6 +156,6 @@ figure();
 hold on;
 plot(xq(y0, :), B(y0, :));
 plot(yq(:, x0), B(:, x0));
-xlabel('x', 'FontSize', 18);
+xlabel('x/y', 'FontSize', 18);
 ylabel('|B|', 'FontSize', 18);
 legend({'B(x,0)', 'B(0,y)'}, 'FontSize', 16);

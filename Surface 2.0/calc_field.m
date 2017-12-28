@@ -23,9 +23,9 @@ for nx = 1:Nx
     for ny = 1:Ny
         % Centre of current element
         cx = (nx-1)*dx + dx/2;
-        cx = cx - 5e-6;;
+        cx = cx - max(x(1,:));
         cy = (ny-1)*dy + dy/2;
-        cy = cy - 5e-6;
+        cy = cy - max(y(:,1));
     
         % Indices of current density matrix corresponding to this current
         % element
@@ -53,21 +53,14 @@ for nx = 1:Nx
         Jn_dir = abs(Jnx_mean) > abs(Jny_mean);
         J_direction(yN_min:yN_max, xN_min:xN_max) = Jn_dir;
         
-        % Calculate the field due to the current segment
-        dBx = 0;
-        dBy = 0;
-        dBz = 0;
-        if Jn_dir
-            % Current is in x direction - contributes to By
-            [dBy, dBz] = eval_B(xq-cx, yq-cy, z, dy, dx, Jn);
-        else
-            % Current is in y direction - contributes to Bx
-            [dBx, dBz] = eval_B(xq-cx, yq-cy, z, dy, dx, Jn);
-        end
+        % Current is in x direction - contributes to By
+        [dBy, dBz1] = eval_B(xq-cx, yq-cy, z, dy, dx, Jnx_mean);
+        % Current is in y direction - contributes to Bx
+        [dBx, dBz2] = eval_B(xq-cx, yq-cy, z, dy, dx, Jny_mean);
         
         Bx = Bx + dBx;
         By = By + dBy;
-        Bz = Bz + dBz;
+        Bz = Bz + dBz1 + dBz2;
     end
 end
 

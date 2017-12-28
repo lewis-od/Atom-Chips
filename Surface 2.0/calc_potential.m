@@ -2,9 +2,9 @@ function [x, y, phi] = calc_potential(V0, res)
 %calc_potential Solve Laplace's equation on a z-shaped conductor
 
 % Specify geometry
-R1 = [3 4 -3 0 0 -3 2.5 2.5 2.3 2.3]';
-R2 = [3 4 -0.25 0.25 0.25 -0.25 2.5 2.5 -2.5 -2.5]';
-R3 = [3 4 3 0 0 3 -2.5 -2.5 -2.3 -2.3]';
+R1 = [3 4 -120 0 0 -120 100 100 92 92]';
+R2 = [3 4 -10 10 10 -10 100 100 -100 -100]';
+R3 = [3 4 120 0 0 120 -100 -100 -92 -92]';
 gm = [R1, R2, R3];
 sf = 'R1+R2+R3';
 ns = char('R1', 'R2', 'R3')';
@@ -25,12 +25,12 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'r', V0);
 applyBoundaryCondition(model, 'neumann', 'Edge', 3:17, 'q', 0, 'g', 0);
 
 % Solve equation
-generateMesh(model, 'Hmax', 0.1);
+generateMesh(model, 'Hmax', 5);
 result = solvepde(model);
 
 % Interpolate solution
-x = linspace(-5, 5, 10*res);
-y = linspace(-5, 5, 10*res);
+x = linspace(-120, 120, 240*res);
+y = linspace(-120, 120, 240*res);
 [x, y] = meshgrid(x, y);
 
 phi = interpolateSolution(result, x, y);
