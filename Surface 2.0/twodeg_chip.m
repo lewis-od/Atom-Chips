@@ -5,17 +5,16 @@
 clear all;
 
 %% Parameters and constants
-% V0 = (5e5/9.743508582048404)*200; % Voltage difference of V0 across wire
 V0 = 1.6e-3 * 640; % 1.6 mV/um
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
-B_bias = 1.54e-4; % Bias field strength [T]
-B_offset = 0.2e-4; % Offset field strength [T]
+B_bias = 10.5e-6; % Bias field strength [T]
+B_offset = 1e-6; % Offset field strength [T]
 
 z = 3e-6; % z position to evaluate field at [um]
 
-add_noise = true;
+add_noise = false;
 
 % Size of current elements to consider [um]
 dx = 2e-6;
@@ -46,7 +45,7 @@ Ey(isnan(Ey)) = 0.0;
 
 %% Add potential fluctiations
 if add_noise
-    phi_noise = calc_noise(x, n, 80e-9*2);
+    phi_noise = calc_noise(x, n, 80e-9);
 %     phi_noise = phi_noise ./ (1.6e-19); % In [eV]
 %     phi_noise = phi_noise ./ (1e-3); % In [meV]
 %     surf(x, y, phi_noise, 'EdgeColor', 'none');
@@ -66,7 +65,7 @@ Jy = sigma.*Ey;
 
 %% Apply finite element method to calculate magnetic field
 % Points to calculate B at
-resolution = 101;
+resolution = 161;
 xq = linspace(-150e-6, 150e-6, resolution);
 yq = linspace(-150e-6, 150e-6, resolution);
 [xq, yq] = meshgrid(xq, yq);
