@@ -1,4 +1,4 @@
-function [Bx, By, Bz] = calc_field(x, y, z, Jx, Jy, dx, dy, xq, yq)
+function [Bx, By, Bz] = calc_field(x, y, Jx, Jy, dx, dy, xq, yq, zq)
 %calc_field Calculate magnetic field using finite element method
 
 % Number of current elements in each dimension
@@ -11,8 +11,6 @@ Ny = floor(Ny);
 dims = size(x);
 dxN = floor(dims(2)/Nx);
 dyN = floor(dims(1)/Ny);
-
-J_direction = ones(size(x)).*-1;
 
 res = length(xq);
 Bx = zeros(res, res);
@@ -50,13 +48,10 @@ for nx = 1:Nx
         Jnx_mean = mean(mean(Jn_x));
         Jny_mean = mean(mean(Jn_y));
         
-        Jn_dir = abs(Jnx_mean) > abs(Jny_mean);
-        J_direction(yN_min:yN_max, xN_min:xN_max) = Jn_dir;
-        
         % Current is in x direction - contributes to By
-        [dBy, dBz1] = eval_B(xq-cx, yq-cy, z, dy, dx, Jnx_mean);
+        [dBy, dBz1] = eval_B(xq-cx, yq-cy, zq, dy, dx, Jnx_mean);
         % Current is in y direction - contributes to Bx
-        [dBx, dBz2] = eval_B(xq-cx, yq-cy, z, dy, dx, Jny_mean);
+        [dBx, dBz2] = eval_B(xq-cx, yq-cy, zq, dy, dx, Jny_mean);
         
         Bx = Bx + dBx;
         By = By + dBy;

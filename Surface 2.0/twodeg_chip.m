@@ -128,7 +128,7 @@ xq = linspace(-150e-6, 150e-6, resolution);
 yq = linspace(-150e-6, 150e-6, resolution);
 [xq, yq] = meshgrid(xq, yq);
 
-[Bx, By, Bz] = calc_field(x, y, z, Jx, Jy, dx, dy, xq, yq);
+[Bx, By, Bz] = calc_field(x, y, Jx, Jy, dx, dy, xq, yq, z);
 
 %% Add bias/offset and plot results
 
