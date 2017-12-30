@@ -9,8 +9,8 @@ V0 = 1.6e-2 * 640; % Voltage difference of V0 across wire
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
-B_bias_factor = 0.8; % B_bias = B_bias_factor * Bs
-B_offset_factor = 0.1; % B_offset = B_offset_factor * Bs
+B_bias_factor = 0.9; % B_bias = B_bias_factor * Bs
+B_offset_factor = 0.2; % B_offset = B_offset_factor * Bs
 
 x_fixed = 0; % z position to evaluate field at [m]
 
@@ -113,8 +113,8 @@ for i = 1:length(B_bias_factor)
 
     plot(zq, B);
 end
-xlabel('z');
-ylabel('|B|');
+xlabel('z', 'FontSize', 18);
+ylabel('|B|', 'FontSize', 18);
 legend(split(num2str(B_bias_factor)).');
 
 subplot(1, 2, 2);
