@@ -5,12 +5,12 @@
 clear all;
 
 %% Parameters and constants
-V0 = 1.6e-3 * 640; % Voltage difference of V0 across wire
+V0 = 1.6e-2 * 640; % Voltage difference of V0 across wire
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
-B_bias = 9e-6; % Bias field strength [T]
-B_offset = 1e-6; % Offset field strength [T]
+B_bias_factor = 0.8; % B_bias = B_bias_factor * Bs
+B_offset_factor = 0.1; % B_offset = B_offset_factor * Bs
 
 x_fixed = 0; % z position to evaluate field at [m]
 
@@ -66,6 +66,12 @@ zq = linspace(0, 30e-6, resolution);
 
 [Bx, By, Bz] = calc_field(x, y, Jx, Jy, dx, dy, x_fixed, yq, zq);
 
+[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 0.5e-12);
+Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
+
+B_bias = B_bias_factor*Bs;
+B_offset = B_offset_factor*Bs;
+
 %% Add bias/offset and plot results
 
 By = By + B_offset;
@@ -93,26 +99,25 @@ By = By + B_offset;
 
 %% Plot how z0 varies with B_bias
 
-% Max of 12e-6 - any lower and z0 doesn't exist/is too close to 0
-B_bias = linspace(6.5e-6, 12e-6);
+B_bias_factor = linspace(0.5, 0.95, 5);
 figure();
-z0 = zeros(1, length(B_bias));
-% subplot(1, 2, 1);
-% hold on;
-for i = 1:length(B_bias)
-    Bx_plot = Bx + B_bias(i);
+z0 = zeros(1, length(B_bias_factor));
+subplot(1, 2, 1);
+hold on;
+for i = 1:length(B_bias_factor)
+    Bx_plot = Bx + B_bias_factor(i)*Bs;
     B = sqrt(Bx_plot.^2 + By.^2 + Bz.^2);
     
     [t, ind] = min(B);
     z0(i) = zq(ind);
 
-%     plot(zq, B);
+    plot(zq, B);
 end
-% xlabel('z');
-% ylabel('|B|');
-% legend(split(num2str(B_bias)).');
+xlabel('z');
+ylabel('|B|');
+legend(split(num2str(B_bias_factor)).');
 
-% subplot(1, 2, 2);
-plot(B_bias, z0);
-xlabel('B_{bias} [T]', 'FontSize', 18);
+subplot(1, 2, 2);
+plot(B_bias_factor, z0);
+xlabel('B_{bias}/B_s', 'FontSize', 18);
 ylabel('z_0 [m]', 'FontSize', 18);

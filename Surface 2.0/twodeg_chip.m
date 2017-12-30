@@ -5,12 +5,12 @@
 clear all;
 
 %% Parameters and constants
-V0 = 1.6e-3 * 640; % 1.6 mV/um
+V0 = 1.6e-2 * 640; % 1.6 mV/um
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
-B_bias = 10.5e-6; % Bias field strength [T]
-B_offset = 1e-6; % Offset field strength [T]
+B_bias_factor = 0.9; % B_bias = B_bias_factor * Bs
+B_offset_factor = 0.1; % B_offset = B_offset_factor * Bs
 
 z = 3e-6; % z position to evaluate field at [um]
 
@@ -71,6 +71,12 @@ yq = linspace(-150e-6, 150e-6, resolution);
 [xq, yq] = meshgrid(xq, yq);
 
 [Bx, By, Bz] = calc_field(x, y, Jx, Jy, dx, dy, xq, yq, z);
+
+[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 0.5e-12);
+Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
+
+B_bias = B_bias_factor*Bs;
+B_offset = B_offset_factor*Bs;
 
 %% Add bias/offset and plot results
 
