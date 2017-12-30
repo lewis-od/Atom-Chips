@@ -10,7 +10,7 @@ n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
 B_bias_factor = 0.9; % B_bias = B_bias_factor * Bs
-B_offset_factor = 0.1; % B_offset = B_offset_factor * Bs
+B_offset_factor = 0.05; % B_offset = B_offset_factor * Bs
 
 x_fixed = 0; % z position to evaluate field at [m]
 
@@ -249,7 +249,6 @@ disp(sprintf("omega_x = %.4g +/- %.4gHz", omega_x, omega_x_err));
 
 %% Calculate loss rate due to spin flips
 h_bar = 1.054571e-34;
-q = 1.6e-19;
 
 z = zq(:, y0);
 y = yq(z0_ind, :);
@@ -275,7 +274,8 @@ omega = sqrt(omega_x.^2 + omega_y.^2 + omega_z.^2);
 % omega_hat = (((mF*gF*mu_B)/(h_bar*By1(z0_ind, y0))) * omega_z.^2)^(1/3);
 omega_hat = ((((mF*gF*mu_B)^2)/(h_bar*m))*dz_B_perp^2)^(1/3);
 
-gamma_mf = (pi/(2*sqrt(q)))*omega*exp(-(omega_hat^3)/(omega^3));
+gamma_mf = (pi/(2*sqrt(exp(1))))*omega*exp(-(omega_hat^3)/(omega^3));
 
 disp(sprintf("omega = %.4g", omega));
 disp(sprintf("omega_hat = %.4g", omega_hat));
+disp(sprintf("loss_rate = %.4g", gamma_mf));
