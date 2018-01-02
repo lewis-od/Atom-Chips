@@ -5,7 +5,7 @@
 clear all;
 
 %% Parameters and constants
-V0 = 1.6e-2 * 640; % Voltage difference of V0 across wire
+V0 = 1.6e-3 * 640; % Voltage difference of V0 across wire
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
@@ -20,14 +20,15 @@ dx = 2e-6;
 dy = 2e-6;
 
 sigma = n*mu*1.6e-19; % Conductivity of 2DEG [S m^-1]
-sigma = sigma.*1e6;
 
 %% Calculate potential
 res = 5e6; % Points per unit for interpolation
 [x, y, phi] = calc_potential(V0, res);
 
-%% Calculate current desnity
-[Ex, Ey] = gradient(phi);
+%% Calculate current density
+h = 1/res;
+
+[Ex, Ey] = gradient(phi, h);
 Ex = -Ex;
 Ey = -Ey;
 
@@ -38,6 +39,7 @@ Ey(isnan(Ey)) = 0.0;
 %% Add potential fluctiations
 if add_noise
     phi_noise = calc_noise(x, n, 80e-9);
+    [Ex_noise, Ey_noise] = gradient(phi_noise, h);
     Ex_noise = -Ex_noise;
     Ey_noise = -Ey_noise;
     
@@ -59,7 +61,7 @@ x0_ind = ceil(size(xq)/2);
 y0_ind = ceil(size(yq)/2);
 
 % Field at surface of conductor
-[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 0.5e-12);
+[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 1e-11);
 Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
 
 B_bias = B_bias_factor*Bs;

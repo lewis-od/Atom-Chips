@@ -5,7 +5,7 @@
 clear all;
 
 %% Parameters and constants
-V0 = 1.6e-2 * 640; % 1.6 mV/um
+V0 = 1.6e-3 * 640; % 1.6 mV/um
 n = 3.3e15; % Mean electron density of 2DEG [m^-2]
 mu = 140; % Mobility of 2DEG [m^2 V^-2 s^-1]
 mu_0 = 4e-7 * pi; % Permeability of free space
@@ -14,14 +14,13 @@ B_offset_factor = 0.2; % B_offset = B_offset_factor * Bs
 
 z = 3e-6; % z position to evaluate field at [um]
 
-add_noise = false;
+add_noise = true;
 
 % Size of current elements to consider [um]
 dx = 2e-6;
 dy = 2e-6;
 
 sigma = n*mu*1.6e-19; % Conductivity of 2DEG [S m^-1]
-sigma = sigma*1e6;
 
 %% Calculate and plot potential
 res = 5e6; % Points per unit for interpolation
@@ -35,7 +34,9 @@ res = 5e6; % Points per unit for interpolation
 % colormap cool;
 
 %% Calculate current desnity
-[Ex, Ey] = gradient(phi);
+h = 1/res;
+
+[Ex, Ey] = gradient(phi, h);
 Ex = -Ex;
 Ey = -Ey;
 
@@ -51,8 +52,7 @@ if add_noise
 %     surf(x, y, phi_noise, 'EdgeColor', 'none');
 %     view(2);
 %     colorbar();
-    
-    [Ex_noise, Ey_noise] = gradient(phi_noise);
+    [Ex_noise, Ey_noise] = gradient(phi_noise, h);
     Ex_noise = -Ex_noise;
     Ey_noise = -Ey_noise;
     
@@ -72,7 +72,7 @@ yq = linspace(-150e-6, 150e-6, resolution);
 
 [Bx, By, Bz] = calc_field(x, y, Jx, Jy, dx, dy, xq, yq, z);
 
-[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 0.5e-12);
+[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 1e-11);
 Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
 
 B_bias = B_bias_factor*Bs;
