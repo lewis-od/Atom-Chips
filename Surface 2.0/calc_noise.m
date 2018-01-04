@@ -15,8 +15,8 @@ scale_factor = grain_size/current_size;
 % scale_factor = scale_factor * res * 1e6;
 
 % Add white noise to donor density distribution
-n_dist = ones(floor(size(x)*scale_factor)).*n;
-noise = (imnoise(n_dist, 'gaussian', 0, 0.1) - 0.5)*2;
+n_dist = ones(ceil(size(x)/scale_factor)).*n;
+noise = imnoise(n_dist, 'gaussian', 0, 1) - 0.5;
 n_dist = noise.*n + n_dist;
 n_dist = imresize(n_dist, size(x), 'nearest');
 
@@ -34,7 +34,7 @@ kx = kx - (max(kx)/2);
 ky = ky - (max(ky)/2);
 [kx, ky] = meshgrid(kx, ky);
 k = sqrt(kx.^2 + ky.^2);
-k = k.*(2*pi)^2; % Correct for factor of 2pi from each FFT
+k = k.*(2*pi)^1; % Correct for factor of 2pi from each FFT
 
 % Integrand of Thomas-Fermi screening equation
 phi_noise_hat = (exp(-k.*d) .* delta_n_hat)./(k + k_s);
