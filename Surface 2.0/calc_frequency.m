@@ -1,4 +1,4 @@
-function [omega, omega_hat, gamma_mf, z0, Bs] = calc_frequency(x, y, Jx, Jy, bias_factor, offset_factor)
+function [omega, omega_hat, gamma_mf] = calc_frequency(x, y, Jx, Jy, B_bias, B_offset, z0)
 %calc_frequency Calculate trap distance, trap frequency, critical
 %frequency, and loss rate for the given bias and offset fields
 
@@ -18,29 +18,11 @@ zq = linspace(0, 15e-6, resolution);
 x0_ind = ceil(size(xq)/2);
 y0_ind = ceil(size(yq)/2);
 
-% Field at surface of conductor
-[Bx0, By0, Bz0] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, 0.5e-12);
-Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
-
-B_bias = bias_factor*Bs;
-B_offset = offset_factor*Bs;
-
 % Calculate B for r=(0, 0, z)
 [Bx3, By3, Bz3] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, zq);
 By3 = By3 + B_offset;
 Bx3 = Bx3 + B_bias;
 B3 = sqrt(Bx3.^2 + By3.^2 + Bz3.^2);
-
-% Find z0
-[o, z0_ind] = min(B3);
-z0 = zq(z0_ind);
-
-% Calculate B for r=(x, 0, z0)
-[Bx1, By1, Bz1] = calc_field(x, y, Jx, Jy, dx, dy, xq, 0, z0);
-Bz1 = Bz1(1,:);
-By1 = By1(1,:) + B_offset;
-Bx1 = Bx1(1,:) + B_bias;
-B1 = sqrt(Bx1.^2 + By1.^2 + Bz1.^2);
 
 %% Define constants for frequency/loss-rate calculations
 % Trap freq. for an Rubidium-87 atom in the |F=2, m_F=2> state
@@ -49,6 +31,7 @@ gF = 1/2; % Lande g-factor (theoretical value)
 mu_B = 9.274e-24; % Bohr magneton [J/T]
 m = 87 * 1.66054e-27; % Mass of atoms [kg]
 h_bar = 1.054571e-34;
+z0_ind = find(zq == z0);
 
 %% Calculate loss rate due to spin flips
 
