@@ -33,42 +33,28 @@ end
 Jx = sigma.*Ex;
 Jy = sigma.*Ey;
 
-%%
-offset_factors = linspace(0, 0.5, 10);
+%% Calculate trap frequencies, trap distances, and loss-rates
+
+offset_factors = linspace(0, 0.2, 10);
 bias_factor = 0.9;
 
 N = length(offset_factors);
 gammas = zeros(1, N);
-gamma_errors = zeros(1, N);
 omegas = zeros(1, N);
-omega_x = zeros(1, N);
-omega_y = zeros(1, N);
-omega_z = zeros(1, N);
-omega_errors = zeros(1, N);
+z0s = zeros(1, N);
 r2s = zeros(3, N);
 for i = 1:length(offset_factors)
    offset_factor = offset_factors(i);
-   [omega, omega_err, r_squared, omega_hat, gamma, gamma_err] = calc_frequency(x, y, Jx, Jy, bias_factor, offset_factor);
+   [omega, omega_hat, gamma, z0, Bs] = calc_frequency(x, y, Jx, Jy, bias_factor, offset_factor);
    
    gammas(i) = gamma;
-   gamma_errors(i) = gamma_err;
-   omega_x(i) = omega(1);
-   omega_y(i) = omega(2);
-   omega_z(i) = omega(3);
-   omegas(i) = norm(omega);
-   omega_error = sqrt(sum(omega_err.^2 ./ omega.^2))/norm(omega);
-   omega_errors(i) = omega_error;
-   r2s(:,i) = r_squared;
-   
-%    disp(r_squared);
+   omegas(i) = omega;
+   z0s(i) = z0;
 end
 
 %%
 
 figure();
 semilogy(offset_factors, gammas);
-% ax = axes;
-% errorbar(offset_factors, gammas, gamma_errors);
-% ax.YScale = 'log';
 xlabel('B_{offset}/B_s', 'FontSize', 18);
 ylabel('\Gamma_{MF} [s^{-1}]', 'FontSize', 18);
