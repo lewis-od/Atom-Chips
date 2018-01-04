@@ -76,11 +76,29 @@ Bz_analytic = B.*cos(theta);
 
 %% Plot results
 
-figure();
+X = X./1e-3;
+Z = Z./1e-3;
+
+scale = 1.7;
+figure('Position', [680, 558, 560*2*scale 420*scale]);
+subplot(1,2,1);
 hold on;
 quiver(X, Z, Bx_analytic, Bz_analytic);
 quiver(X, Z, Bx, Bz);
 hold off;
-xlabel('x [m]', 'FontSize', 18);
-ylabel('z [m]', 'FontSize', 18);
+xlabel('x [mm]', 'FontSize', 18);
+ylabel('z [mm]', 'FontSize', 18);
 legend({'B_{analytic}', 'B_{computational}'}, 'FontSize', 16);
+xlim([min(min(X)) max(max(X))]);
+ylim([min(min(Z)) max(max(Z))]);
+
+subplot(1,2,2);
+hold on;
+quiver(X, Z, Bx_analytic, Bz_analytic);
+quiver(X, Z, Bx, Bz);
+hold off;
+xlabel('x [mm]', 'FontSize', 18);
+ylabel('z [mm]', 'FontSize', 18);
+legend({'B_{analytic}', 'B_{computational}'}, 'FontSize', 16);
+xlim([min(min(X)) max(max(X))]./2);
+ylim([min(min(Z)) max(max(Z))]./2);

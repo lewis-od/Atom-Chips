@@ -38,17 +38,22 @@ Jy = zeros(size(x));
 [By_analytic, Bz_analytic] = eval_B(xq, yq, zq, W, L, J);
 
 %% Plot results
+yq = yq./1e-3;
+zq = zq./1e-3;
 
-figure()
+figure('Position', [680 558 560*2 420*2]);
 hold on;
 quiver(yq, zq, By_analytic, Bz_analytic);
 quiver(yq, zq, By, Bz);
 hold off;
-xlabel('y [m]', 'FontSize', 18);
-ylabel('z [m]', 'FontSize', 18);
+xlabel('y [mm]', 'FontSize', 18);
+ylabel('z [mm]', 'FontSize', 18);
 xlim([min(min(yq)) max(max(yq))]);
 ylim([min(min(zq)) max(max(zq))]);
 legend({'B_{analytic}', 'B_{computational}'}, 'FontSize', 16);
+
+yq = yq.*1e-3;
+zq = zq.*1e-3;
 
 %% Long thin wire
 W = 1e-7;
@@ -72,13 +77,16 @@ theta = atan2(zq, yq);
 By_analytic = -B.*sin(theta);
 Bz_analytic = B.*cos(theta);
 
-figure();
+yq = yq./1e-3;
+zq = zq./1e-3;
+
+figure('Position', [680 558 560*2 420*2]);
 hold on;
 quiver(yq, zq, By, Bz);
 quiver(yq, zq, By_analytic, Bz_analytic);
 hold off;
-xlabel('y [m]', 'FontSize', 18);
-ylabel('z [m]', 'FontSize', 18);
+xlabel('y [mm]', 'FontSize', 18);
+ylabel('z [mm]', 'FontSize', 18);
 xlim([min(min(yq)) max(max(yq))]);
 ylim([min(min(zq)) max(max(zq))]);
 legend({'B_{analytic}', 'B_{computational}'}, 'FontSize', 16);

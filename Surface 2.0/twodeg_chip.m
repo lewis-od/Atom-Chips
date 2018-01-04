@@ -12,7 +12,7 @@ mu_0 = 4e-7 * pi; % Permeability of free space
 B_bias_factor = 0.9; % B_bias = B_bias_factor * Bs
 B_offset_factor = 0.2; % B_offset = B_offset_factor * Bs
 
-z = 3e-6; % z position to evaluate field at [um]
+z = 1.5e-6; % z position to evaluate field at [um]
 
 add_noise = true;
 
