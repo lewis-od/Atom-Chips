@@ -14,7 +14,7 @@ B_offset_factor = 0.2; % B_offset = B_offset_factor * Bs
 
 x_fixed = 0; % x position to evaluate field at [m]
 
-add_noise = true;
+add_noise = false;
 
 % Size of current elements to consider [m]
 dx = 2e-6;
@@ -77,9 +77,9 @@ B_offset = B_offset_factor*Bs;
 %% Add bias/offset and plot results
 
 By = By + B_offset;
-% Bx = Bx + B_bias;
-% 
-% B = sqrt(Bx.^2 + By.^2 + Bz.^2);
+Bx = Bx + B_bias;
+
+B = sqrt(Bx.^2 + By.^2 + Bz.^2);
 % Plot results
 % figure();
 % surf(yq, zq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
@@ -95,9 +95,9 @@ By = By + B_offset;
 % y0 = ceil(dims(2)/2);
 % 
 % figure();
-% plot(zq(:, y0), B(:, y0));
-% xlabel('z [m]', 'FontSize', 18);
-% ylabel('|B| [T]', 'FontSize', 18);
+plot(zq/1e-6, B);
+xlabel('z [\mum]', 'FontSize', 20);
+ylabel('|{\bfB}| [T]', 'FontSize', 20);
 
 %% Plot how z0 varies with B_bias
 

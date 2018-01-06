@@ -12,9 +12,9 @@ mu_0 = 4e-7 * pi; % Permeability of free space
 B_bias_factor = 0.9; % B_bias = B_bias_factor * Bs
 B_offset_factor = 0.2; % B_offset = B_offset_factor * Bs
 
-z = 1.5e-6; % z position to evaluate field at [um]
+z = 1.56e-06; % z position to evaluate field at [m]
 
-add_noise = true;
+add_noise = false;
 
 % Size of current elements to consider [um]
 dx = 2e-6;
@@ -79,20 +79,19 @@ B_bias = B_bias_factor*Bs;
 B_offset = B_offset_factor*Bs;
 
 %% Add bias/offset and plot results
-
 Bx = Bx + B_bias;
 By = By + B_offset;
 
 B = sqrt(Bx.^2 + By.^2 + Bz.^2);
 
-% Plot results
+%% Plot results
 figure();
-surf(xq, yq, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
-xlabel('x', 'FontSize', 18);
-ylabel('y', 'FontSize', 18);
+surf(xq/1e-6, yq/1e-6, B, 'EdgeColor', 'none', 'FaceColor', 'interp');
+xlabel('x [\mum]', 'FontSize', 20);
+ylabel('y [\mum]', 'FontSize', 20);
 c = colorbar();
-c.Label.String = '|B|';
-c.Label.FontSize = 18;
+c.Label.String = '|{\bfB}| [T]';
+c.Label.FontSize = 20;
 colormap jet;
 view(2);
 
@@ -102,8 +101,8 @@ y0 = ceil(dims(1)/2);
 
 figure();
 hold on;
-plot(xq(y0, :), B(y0, :));
-plot(yq(:, x0), B(:, x0));
-xlabel('x/y', 'FontSize', 18);
-ylabel('|B|', 'FontSize', 18);
-legend({'B(x,0)', 'B(0,y)'}, 'FontSize', 16);
+plot(xq(y0, :)/1e-6, B(y0, :));
+plot(yq(:, x0)/1e-6, B(:, x0));
+xlabel('x/y [\mum]', 'FontSize', 20);
+ylabel('|{\bfB}| [T]', 'FontSize', 20);
+legend({'|{\bfB}(x,0)|', '|{\bfB}(0,y)|'}, 'FontSize', 20);

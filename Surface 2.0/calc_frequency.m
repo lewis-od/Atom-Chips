@@ -9,7 +9,7 @@ dx = 2e-6;
 dy = 2e-6;
 
 % Points to calculate B at
-resolution = 301;
+resolution = 501;
 xq = linspace(-150e-6, 150e-6, resolution);
 yq = linspace(-150e-6, 150e-6, resolution);
 zq = linspace(0, 15e-6, resolution);
@@ -46,6 +46,7 @@ omega = sqrt((mF*gF*mu_B)/m * d2B_dz2(z0_ind));
 B_perp_z = sqrt(Bx3.^2 + (By3-B_offset).^2 + Bz3.^2);
 dz_B_perp = gradient(abs(B_perp_z), hz);
 dz_B_perp = dz_B_perp(z0_ind);
+% dz_B_perp = mean(dz_B_perp((z0_ind-5):(z0_ind+5)));
 
 % Critical frequency [Hz]
 omega_hat = ((((mF*gF*mu_B)^2)/(h_bar*m))*dz_B_perp^2)^(1/3);

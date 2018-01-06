@@ -35,7 +35,8 @@ Jy = sigma.*Ey;
 
 %% Calculate Bs and z0
 
-offset_factors = linspace(0.0, 0.5, 10);
+offset_factors = linspace(0.0, 0.5, 20);
+offset_factors(1) = 0.02;
 bias_factor = 0.9;
 
 % Size of current elements [m]
@@ -48,8 +49,8 @@ Bs = sqrt(Bx0.^2 + By0.^2 + Bz0.^2);
 
 B_bias = bias_factor*Bs;
 
-% Calculate B for r=(0, 0, z
-zq = linspace(0, 15e-6, 301);
+% Calculate B for r=(0, 0, z)
+zq = linspace(0, 15e-6, 501);
 [Bx3, By3, Bz3] = calc_field(x, y, Jx, Jy, dx, dy, 0, 0, zq);
 Bx3 = Bx3 + B_bias; % No need to add offset - doesn't affect z0
 B3 = sqrt(Bx3.^2 + By3.^2 + Bz3.^2);
@@ -63,8 +64,6 @@ N = length(offset_factors);
 gammas = zeros(1, N);
 omegas = zeros(1, N);
 omega_hats = zeros(1, N);
-z0s = zeros(1, N);
-r2s = zeros(3, N);
 for i = 1:length(offset_factors)
    offset_factor = offset_factors(i);
    B_offset = offset_factor * Bs;
@@ -73,20 +72,19 @@ for i = 1:length(offset_factors)
    gammas(i) = gamma;
    omegas(i) = omega;
    omega_hats(i) = omega_hat;
-   z0s(i) = z0;
 end
 
 %% Plot results
 
-figure();
+figure('Position', [337 285 560*1.5 420*1.5]);
 semilogy(offset_factors, gammas);
-xlabel('B_{offset}/B_s', 'FontSize', 18);
-ylabel('\Gamma_{MF} [s^{-1}]', 'FontSize', 18);
+xlabel('B_{offset}/B_s', 'FontSize', 20);
+ylabel('\Gamma_{MF} [s^{-1}]', 'FontSize', 20);
 
-figure();
+figure('Position', [337 285 560*1.5 420*1.5]);
 hold on;
 plot(offset_factors, omegas);
 plot(offset_factors, omega_hats);
-xlabel('B_{offset}/B_s', 'FontSize', 18);
-ylabel('\omega [Hz]', 'FontSize', 18);
-legend({'$\omega$', '$\hat{\omega}$'}, 'FontSize', 16, 'Interpreter', 'Latex');
+xlabel('B_{offset}/B_s', 'FontSize', 20);
+ylabel('\omega [Hz]', 'FontSize', 20);
+legend({'$\omega$', '$\hat{\omega}$'}, 'FontSize', 20, 'Interpreter', 'Latex');
